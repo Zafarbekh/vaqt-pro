@@ -1,0 +1,39 @@
+name: APK yig'ish
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fayllarni joylashtirish
+        run: |
+          mkdir -p www assets
+          mv index.html icon.svg www/
+          mv icon.png assets/
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: npm install
+      - run: npx cap add android
+      - name: Native azon kodi va ruxsatlar
+        run: |
+          D=android/app/src/main/java/uz/vaqt/namoz
+          M=android/app/src/main/AndroidManifest.xml
+          mkdir -p $D
+          cp MainActivity.java AlarmPlugin.java AlarmService.java AlarmReceiver.java BootReceiver.java $D/
+          sed -i '/<\/application>/e cat manifest-snippet.xml' $M
+          for p in VIBRATE CAMERA ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION POST_NOTIFICATIONS SCHEDULE_EXACT_ALARM USE_EXACT_ALARM RECEIVE_BOOT_COMPLETED WAKE_LOCK FOREGROUND_SERVICE FOREGROUND_SERVICE_MEDIA_PLAYBACK USE_FULL_SCREEN_INTENT; do
+            sed -i "s#<application#<uses-permission android:name=\"android.permission.$p\" />\n    <application#" $M
+          done
+      - run: npx capacitor-assets generate --android
+      - run: npx cap sync android
+      - name: APK
+        run: cd android && ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Vaqt-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk

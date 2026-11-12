@@ -1,0 +1,7 @@
+        <receiver android:name="uz.vaqt.namoz.AlarmReceiver" android:exported="false" />
+        <receiver android:name="uz.vaqt.namoz.BootReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <service android:name="uz.vaqt.namoz.AlarmService" android:exported="false" android:foregroundServiceType="mediaPlayback" />

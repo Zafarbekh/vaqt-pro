@@ -1,0 +1,6 @@
+{
+  "appId": "uz.vaqt.namoz",
+  "appName": "Vaqt",
+  "webDir": "www",
+  "android": { "allowMixedContent": false }
+}
