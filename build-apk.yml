@@ -10,8 +10,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Fayllarni joylashtirish
         run: |
-          mkdir -p www assets
+          mkdir -p www/sounds assets
           mv index.html icon.svg www/
+          mv azon1.mp3 azon2.mp3 www/sounds/
           mv icon.png assets/
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
